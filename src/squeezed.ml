@@ -32,25 +32,24 @@ let options = [
 let _ = 
 	debug "squeezed version %d.%d starting" major_version minor_version;
 
-	configure ~options ();
-
-	let module Server = Memory_interface.Server(Memory_server) in
-
-	let server = Xcp_service.make 
-		~path:Memory_interface.xml_path
-		~queue_name:Memory_interface.queue_name
-		~rpc_fn:(Server.process ())
-		() in
-
-	maybe_daemonize ();
+	(* configure ~options ();
+   * 
+	 * let module Server = Memory_interface.Server(Memory_server) in
+   * 
+	 * let server = Xcp_service.make 
+	 * 	~path:Memory_interface.xml_path
+	 * 	~queue_name:Memory_interface.queue_name
+	 * 	~rpc_fn:(Server.process ())
+	 * 	() in
+   * 
+	 * maybe_daemonize (); *)
 	(* NB Initialise the xenstore connection after daemonising, otherwise
 	   we lose our connection *)
 
-	Memory_server.record_boot_time_host_free_memory ();
-
-	let rpc_server = Thread.create Xcp_service.serve_forever server in
-
-	Memory_server.start_balance_thread balance_check_interval;
-	Squeeze_xen.Domain.start_watch_xenstore_thread ();
-	if !Squeeze.manage_domain_zero then Squeeze_xen.configure_domain_zero ();
-	Thread.join rpc_server
+	Memory_server.calculate_boot_time_host_free_memory ();
+	(* let rpc_server = Thread.create Xcp_service.serve_forever server in
+   * 
+	 * Memory_server.start_balance_thread balance_check_interval;
+	 * Squeeze_xen.Domain.start_watch_xenstore_thread ();
+	 * if !Squeeze.manage_domain_zero then Squeeze_xen.configure_domain_zero ();
+	 * Thread.join rpc_server *)

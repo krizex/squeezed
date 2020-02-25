@@ -275,6 +275,7 @@ let calculate_boot_time_host_free_memory () =
       host_free_pages + host_scrub_pages + (Int64.to_nativeint domain0_total_pages) in
     let boot_time_host_free_kib =
       pages_to_kib (Int64.of_nativeint boot_time_host_free_pages) in
+    Printf.printf "Free: %Ld, Scrub: %Ld, Dom0Total: %Ld, BootFree: %Ld KiB\n" (Int64.of_nativeint host_free_pages) (Int64.of_nativeint host_scrub_pages) domain0_total_pages boot_time_host_free_kib;
     Int64.mul 1024L boot_time_host_free_kib
 
 (* Read the free memory on the host and record this in the db. This is used *)
